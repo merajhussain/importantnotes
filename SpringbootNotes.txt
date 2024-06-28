@@ -1,0 +1,534 @@
+IOC: Inversion of control. Moving the control of creating the objects to IOC container in spring
+Bean: Plain java objects
+Spring bean is mainained by IOC container
+ 1. Container gets started
+ 2. Container creates beans
+ 3. Dependencis are created
+ 4. Dependencis are injected
+ 5. Destories the dependencies
+
+@singleton: Only one Bean per application context
+@prototype: New bean every request
+@component: simplest form of dependency
+@autowire:  injects the dependency automatically(setter,constructor & field injection)
+@qualifier(qualifiername): based on the qualifier we can select the bean
+@Primary: bean will be selected based on this qualitier
+
+@Inject is a standard annotaion but @Autowire is spring specifc
+
+@SpringBootApplication = @Configuarion + @EnableAutoConfiguarion + @ComponentScan
+
+By Default scan happens in the package where @SpringBootApplication is present. 
+
+@ComponentScan is used to scan the packages in different packages other than where @SpringBootApplication is defined. 
+@PostConstruct: Used to perform some action immediately after a bean is created. Used to initialize things for the bean
+ examples: Caching data
+ 
+@PreDestory: Invoked just before the bean is destroyed
+
+If we dont want to use PostConstruct and PreDestory then implement the interfaces InitializingBean and DisposableBean 
+and override the methods to get same behavior
+
+XMLBeanFactory: Actual conatiner that insantiates configures and manages number of beans
+
+
+
+PostConstruct and PreDestory used to Manage Prototype bean due overwhelming creation of beans of type prototype
+
+Spring way:
+
+<bean id="contentBasedFilter" 
+  class="io.datajek.spring.basics.movierecommendersystem.lesson14.ContentBasedFilter">
+</bean>
+
+<bean id="collaborativeFilter" 
+  class="io.datajek.spring.basics.movierecommendersystem.lesson14.CollaborativeFilter"> 
+</bean>
+
+<bean id="recommenderImplementation"     
+  class="io.datajek.spring.basics.movierecommendersystem.lesson14.RecommenderImplementation">
+</bean>
+
+
+ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext("appContext.xml");
+
+@Controller: Web layer
+@Service: business layer
+@Repository: database layer 
+
+@Value annotation to bind values in app.properties file to property in class;
+
+
+SpringbootStarter:
+starter web: building web and restful applications
+
+@Controller: Java calss to map uri to path
+@RestController: 
+
+@RequestMapping(method=RequestMethod.GET, value="/movies")
+//OR
+@GetMapping("/movies")
+public List<Movie> getAllMovies() {
+    //...
+}
+
+ Developer tools: supports live reloads
+ 
+ Actuator: Monitoring health of springboot application
+ 
+  http://localhost:8080/actuator or  http://localhost:8080/application(old release)
+  
+  By Default actuator endpoints are disabled. To enable
+  management.endpoints.web.exposure.include=*
+  
+  
+  public List<Player> getAllPlayers() {
+  String sql = "SELECT * FROM PLAYER";
+  return jdbcTemplate.query(sql, new BeanPropertyRowMapper<Player> (Player.class));
+}
+
+@Entity: Define pojo as db entity
+@GeneratedValue: Used for sequences
+
+@Repository: To manager the entities
+@Repository
+@Transactional
+public class PlayerRepository{
+
+@PersistenceContext
+  EntityManager entityManager;
+}
+
+A JPA EntityManager manages connection to a database as well as to database operations. 
+EntityManager is associated with a PersistenceContext. 
+All operations that are performed in a specific session are stored inside the PersistenceContext. 
+EntityManager is the interface to the Persistence Context. 
+All operations on the entity go through the EntityManager. 
+We will declare an EntityManager object in our class and mark it with the @PersistenceContext annotation.
+
+
+Merge,
+findByiD
+remove
+
+
+
+	@Repository
+@Transactional
+public class PlayerRepository {
+	
+	@PersistenceContext
+	EntityManager entityManager;
+
+ 	public Player insertPlayer(Player player){
+		return entityManager.merge(player);
+	}
+
+	public Player updatePlayer(Player player){
+		return entityManager.merge(player);
+	}
+
+	public Player getPlayerById(int id) {
+	    return entityManager.find(Player.class, id);			    
+	}
+
+	public void deletePlayerById(int id){
+		Player player = entityManager.find(Player.class, id);
+		entityManager.remove(player);
+
+}
+
+
+SpringDataJpa
+
+public interface PlayerSpringDataRepository extends JpaRepository<Player, Integer>{
+
+  //no implementation required!
+}
+
+
+AutoWire the above class to perform db operations
+
+spring.jpa.hibernate.ddl-auto=none 
+spring.datasource.url = jdbc:mysql://localhost:3306/movie_example
+spring.datasource.username = demo
+spring.datasource.password = demo
+
+
+
+
+
+A Java object (POJO) can be converted into a JSON object and vice versa through a process called data binding. We can read JSON and use it to populate a Java object. In the same manner, we can use a Java object to create JSON.
+
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.12.3</version>
+</dependency>
+
+@JsonIgnoreProperties: Can be used to bypass exception by setting IgnoreUnknown to true. This feature is useful when the JSON file contains more properties but we are only interested in a few of them.
+
+
+Player Controller:
+package io.datajek.springrest;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class PlayerController {
+
+	@Autowired
+	PlayerService service;
+	
+	@GetMapping("/welcome")
+	public String welcome() {
+	    return "Tennis Player REST API";
+	}
+
+	@GetMapping("/players")
+	public List<Player> allPlayers() {
+		return service.getAllPlayers();	    
+	}
+	
+	
+	@GetMapping("/players/{id}")
+	public Player getPlayer(@PathVariable int id){
+		return service.getPlayer(id);
+	}
+}
+
+PlayerService:
+
+package io.datajek.springrest;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class PlayerService {
+	
+	@Autowired
+	PlayerRepository repo;
+	
+	//Get all players
+	public List<Player> getAllPlayers() {
+		return repo.findAll();	    
+	}
+
+	
+	//Get player by ID
+	
+	//Add a player
+	
+	//Update a player
+	
+	//Partial update
+	
+	//delete a player
+}
+
+PlayerRepository:
+
+package io.datajek.springrest;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PlayerRepository extends JpaRepository<Player, Integer>{
+	
+}
+
+
+@PathVariable annotation binds the path variable {id} from the URL to the method parameter id
+@GetMapping("/players/{id}")
+public Player getPlayer() {
+    //call service layer method
+}
+
+The @RequestBody annotation handles this conversion and binds the data in the request body to a method parameter.
+
+{
+  "name": "Federer",
+  "nationality": "Switzerland",
+  "birthDate": "22-11-1984",
+  "titles": 151
+}
+
+
+@PutMapping("/players/{id}")
+public Player updatePlayer(@PathVariable int id, @RequestBody Player player) {
+ 
+}
+
+@ControllerAdvice
+A best practice in exception handling is to have centralized exception handlers that can be used by all controllers in the REST API. 
+Since exception handling is a cross-cutting concern, Spring provides the @ControllerAdvice annotation.
+This annotation intercepts requests going to the controller and responses coming from controllers.
+
+package io.datajek.springrest;
+
+import java.time.ZonedDateTime;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+@ControllerAdvice
+public class PlayerExceptionHandler {
+
+	@ExceptionHandler
+	public ResponseEntity<PlayerErrorResponse> playerNotFoundHandler (PlayerNotFoundException ex, HttpServletRequest req){
+		
+		PlayerErrorResponse error = new PlayerErrorResponse(
+                                                              ZonedDateTime.now(),
+                                                              HttpStatus.NOT_FOUND.value(),
+                                                              req.getRequestURI(),
+                                                              ex.getMessage());
+		
+		return new ResponseEntity<> (error, HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler
+	public ResponseEntity<PlayerErrorResponse> genericHandler (Exception ex, HttpServletRequest req){
+		PlayerErrorResponse error = new PlayerErrorResponse(
+                                                              ZonedDateTime.now(),
+                                                              HttpStatus.BAD_REQUEST.value(),
+                                                              req.getRequestURI(),
+                                                              ex.getMessage());
+		
+		return new ResponseEntity<> (error, HttpStatus.BAD_REQUEST);
+	}
+}	
+
+
+
+one to one mapping
+
+@Entity
+public class Player {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
+
+	private String name;
+    
+    @OneToOne(cascade=CascadeType.ALL)//, optional = false) 
+    @JoinColumn(name = "profile_id", referencedColumnName = "id")
+    private PlayerProfile playerProfile;
+  
+    public Player( ) {
+    
+    }
+    
+    public Player(String name) {
+		super();
+		this.name = name;
+	}
+    
+    public Player(String name, PlayerProfile profile) {
+		super();
+		this.name = name;
+		this.playerProfile = profile;
+	}
+       
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public PlayerProfile getPlayerProfile() {
+		return playerProfile;
+	}
+
+	public void setPlayerProfile(PlayerProfile playerProfile) {
+		this.playerProfile = playerProfile;
+	}
+
+	@Override
+	public String toString() {
+		return "Player [id=" + id + ", name=" + name + ", playerProfile=" + playerProfile + "]";
+	}
+}
+
+
+Recursion issue:
+
+To solve this issue, we can use the @JsonManagedReference and @JsonBackReference annotations in the classes. As a result, only the owning side of the relationship is serialized and the inverse side is not serialized.
+
+The @JsonManagedReference annotation is used on the playerProfile field in the owning side (Player class). On the inverse side (PlayerProfile class), the @JsonBackReference annotation is used to the player field. These annotations solve the infinite recursion problem.
+
+OneToMany:
+
+@Entity
+public class Tournament {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
+
+	private String name;
+	private String location;
+	
+	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)//, orphanRemoval=true)
+	@JoinColumn(name="tournament_id")
+	private List<Registration> registrations = new ArrayList<>();
+
+	public Tournament() {		
+	}
+
+	public Tournament(String name, String location) {
+		super();
+		this.name = name;
+		this.location = location;
+	}
+	
+	public Tournament(String name, String location, List<Registration> registrations) {
+		super();
+		this.name = name;
+		this.location = location;
+		this.registrations = registrations;
+	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public List<Registration> getRegistrations() {
+		return registrations;
+	}
+
+	public void setRegistrations(List<Registration> registrations) {
+		this.registrations = registrations;
+	}
+
+	//set up one to many relationship
+	public void addRegistration(Registration reg) {
+    	registrations.add(reg);
+    }
+	
+	//remove registration 
+	public void removeRegistration(Registration reg) {
+    	if (registrations != null)
+    		registrations.remove(reg);
+	}
+
+	@Override
+	public String toString() {
+		return "Tournament [id=" + id + ", name=" + name + ", location=" + location + ", registrations=" + registrations
+				+ "]";
+	}
+}
+
+
+
+AOP:
+<dependency>
+   <groupId>org.springframework.boot</groupId>
+   <artifactId>spring-boot-starter-aop</artifactId>
+</dependency>
+
+Aspect
+An aspect is a Java class that implements cross-cutting concerns.
+ The @Aspect annotation is used to define a class as an aspect. 
+ An aspect is a combination of the kinds of methods to intercept and what to do after intercepting them.
+ 
+ Pointcut
+Pointcuts are expressions that determine which method calls will be intercepted. 
+These expressions determine whether an advice needs to be executed or not.
+ Pointcuts are defined following a particular syntax.
+ 
+ Joinpoint
+All method calls that are intercepted are joinpoints. 
+It is a point in the program execution where an aspect can be plugged in. 
+It contains the name of the intercepted method call. 
+ 
+ 
+Weaving
+The process of implementing AOP around method calls is called weaving. 
+Weaving links an aspect with objects in the application to create an advised object. 
+The aspect is called at the right moment. 
+For example, if we are tracking the execution time of some methods in our application, the weaving process will be like this:
+
+
+
+JUNIT life cycle annotations
+@BeforeEach
+Before a test is run, some initialization is needed. In the test cases that we wrote, we created a new instance of the class in every test. A method with the @BeforeEach annotation is executed once before every test method executes. We can initialize the objects or establish a database connection before each test in a method annotated with @BeforeEach. With JUnit, there is no guarantee about the order in which the tests are run. 
+But, it is guaranteed that no matter the order of tests, @BeforeEach is run before the test is run.
+
+@AfterEach
+Similar to @BeforeEach, the @AfterEach annotation tells JUnit to run the method after a test has been executed.
+
+@BeforeAll
+A method annotated with @BeforeAll is run once before all test methods of the class are executed. It is a setup method and has to be static. 
+This method is executed even before the instance of the class to be tested is created.
+
+@AfterAll
+Just like the @BeforeAll annotation, the @AfterAll annotation on a method ensures that it is run after all the tests have been run. It executes after all test methods of the class are executed. 
+This method is a class-level method and is, therefore, static.
+
+
+@Test
+void testfindTotal() {
+  StudentDao studentDaoMock = mock(StudentDao.class);
+  when(studentDaoMock.getMarks()).thenReturn(new int[] {15, 20, 5});
+
+  StudentService studentService = new StudentService(studentDaoMock);
+  int total = studentService.findTotal();
+assertEquals(40, total);
+}
+
+
+@Mock
+The @Mock annotation is used to create a mock without calling the Mockito.mock() method.
+
+
+@InjectMocks
+This annotation automatically injects a mock object into the object being tested. 
+We have been passing the mock object to the StudentService object as a constructor argument in the test method as follows:
+
+
+
+The annotation @ConditionalOnMissingBean tells Spring Boot to configure the bean only if the supplied bean in the parameter is not configured and registered in the application context already.
+
+
+@EnableEurekaClient: To enable a microservice to register itself as eureka client during service discover;
+@EnableEurekaServer: To enable discovery services for client to register. 
