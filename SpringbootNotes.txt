@@ -532,3 +532,8 @@ The annotation @ConditionalOnMissingBean tells Spring Boot to configure the bean
 
 @EnableEurekaClient: To enable a microservice to register itself as eureka client during service discover;
 @EnableEurekaServer: To enable discovery services for client to register. 
+
+
+Spring security:
+
+request-> filter->AuthenticationManager->ProviderManager->AuthProvider
