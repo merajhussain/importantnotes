@@ -537,3 +537,90 @@ The annotation @ConditionalOnMissingBean tells Spring Boot to configure the bean
 Spring security:
 
 request-> filter->AuthenticationManager->ProviderManager->AuthProvider
+
+if you want to authenticate using your custom user and password. Then IMplement custom configuration class that 
+extends WebSecurityConfiguerAdapter and override configrue method.
+We can use password encoder to encode your passwords for example bcrypt encoder 
+
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
+
+    // Example: A list of users, in a real-world application this would be replaced with a database
+    private List<UserDetails> users = new ArrayList<>();
+
+    public CustomUserDetailsService() {
+        // Adding a couple of sample users
+        users.add(User.withDefaultPasswordEncoder().username("user").password("password").roles("USER").build());
+        users.add(User.withDefaultPasswordEncoder().username("admin").password("password").roles("ADMIN").build());
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return users.stream()
+                .filter(user -> user.getUsername().equals(username))
+                .findFirst()
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    }
+}
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .authorizeRequests()
+                .antMatchers("/", "/home", "/public/**").permitAll() // Allow public access to these paths
+                .anyRequest().authenticated() // All other requests need to be authenticated
+                .and()
+            .formLogin()
+                .loginPage("/login") // Custom login page
+                .permitAll() // Allow everyone to see the login page
+                .and()
+            .logout()
+                .permitAll(); // Allow everyone to logout
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web
+            .ignoring()
+                .antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**"); // Static resources paths to be ignored by Spring Security
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}
+
+Class Annotations:
+
+Explanation:
+1.	Class Annotations:
+ @Configuration: Indicates that the class is a source of bean definitions.
+ 	@EnableWebSecurity: Enables Spring Security's web security support.
+2.	configure(HttpSecurity http):
+ 	Defines which URL paths should be secured and which should be publicly accessible.
+ 	Specifies custom login and logout configurations.
+3.	configure(WebSecurity web):
+ 	Configures WebSecurity to ignore certain requests, such as static resources, to improve performance.
+Key Components:
+ 	authorizeRequests(): Used to restrict access based on URL patterns.
+ 	formLogin(): Configures form-based authentication.
+ 	logout(): Configures logout functionality.
+ 	ignoring(): Specifies paths to be ignored by Spring Security.
+This example provides a basic setup. Depending on your application requirements, you might need to add more configurations, such as user roles, additional security measures, or custom authentication providers.
+
+@EnableMethodSecurity(prePostEnabled=true) to preauthorize requests per restful mapping
+
+CSRF: Cross Site requets forgery. CSRF (Cross-Site Request Forgery) is a type of attack where unauthorized commands are transmitted from a user that the web application trusts.
