@@ -1,3 +1,15 @@
+Class loaders in Java:
+
+System class loader: loads classes from classpath
+Extenstion class loader: 
+
+a class can extent only one abstract class but can implement multiple interfaces
+abstract class has instance varibles but interfaces can have only constants
+
+
+
+
+===============================Spring boot=====================================================
 IOC: Inversion of control. Moving the control of creating the objects to IOC container in spring
 Bean: Plain java objects
 Spring bean is mainained by IOC container
@@ -536,7 +548,7 @@ The annotation @ConditionalOnMissingBean tells Spring Boot to configure the bean
 
 Spring security:
 
-request-> filter->AuthenticationManager->ProviderManager->AuthProvider
+request-> filter->AuthenticationManager->ProviderManager->AuthProvider->UserDetailsService(loadUserByUsername)
 
 if you want to authenticate using your custom user and password. Then IMplement custom configuration class that 
 extends WebSecurityConfiguerAdapter and override configrue method.
@@ -624,3 +636,21 @@ This example provides a basic setup. Depending on your application requirements,
 @EnableMethodSecurity(prePostEnabled=true) to preauthorize requests per restful mapping
 
 CSRF: Cross Site requets forgery. CSRF (Cross-Site Request Forgery) is a type of attack where unauthorized commands are transmitted from a user that the web application trusts.
+
+Principal: Currently logged in user
+
+Role: Decides what actions principal can perform
+
+Authentication: 
+Authorization:
+Granted Authotrity: 
+
+Filters: Intercept every request. Spring security puts filters and examines all request and allows/denies request
+
+AuthenticationManager: 
+
+Since Spring Boot relies on Spring Security’s defaults, CSRF protection is turned on by default. 
+This means that the actuator endpoints that require a POST (shutdown and loggers endpoints), 
+PUT or DELETE will get a 403 forbidden error when the default security configuration is in use.
+
+Default Schema has users and authorities tables.

@@ -1,0 +1,27 @@
+Api gateway: entry point to access microservice
+
+Services of api gateway: routing based on request headers,authentication, security,load balancing, ssl
+
+spring-cloud-starter-gateway
+
+route,predicate,filter
+
+@EnableCircuitBreaker
+circuit breaker: set of states maintained in application. Open , closed, half open. 
+dependecy for circuit breaker: reslience4j
+management.health.circuitbreaker.enabled=true
+management.endpoints.web.exposure.include=*
+
+
+fallbackmethod: In case dependant service is down and to send back appropriate response 
+@TimeLimiter: for handling timeouts within micro services. For example if inventory service is down then order service will timeout 
+after certain period
+
+Distributed tracing: traceid: unique identifier that comes into the system. 
+span id: when request goes accross multiple services. Then at each service we call it spanid.
+multiple spain ids form traceid
+
+distributed tracing dependencies: sleuth and zipkin
+
+management.zipkin.tracing.endpoint=http://localhost:9411/api/v2/spans
+management.tracing.sampling.probability=1.0
