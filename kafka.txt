@@ -1,0 +1,16 @@
+Zookeeper: That manages kafka cluster
+cluster:
+brokers:
+paritions:
+producer:
+consumer:
+
+zookeeper-server-start.bat zookeeper.properties (starting zookper)
+bin\windows\kafka-server-start.bat config\server.properties (starting kafka cluster)
+
+bin\windows\kafka-topics.bat --create --topic meraj-topic --bootstrap-server localhost:9092(create topic)
+Created topic meraj-topic.
+
+\kafka-console-producer.bat --topic meraj-topic --bootstrap-server localhost:9092
+
+kafka-console-consumer.bat --topic meraj-topic --from-beginning --bootstrap-server localhost:9092

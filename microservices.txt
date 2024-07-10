@@ -1,13 +1,20 @@
-Api gateway: entry point to access microservice
+Api gateway: entry point to access microservice. Clients will hit api gateway to access microservices
+
 
 Services of api gateway: routing based on request headers,authentication, security,load balancing, ssl
 
-spring-cloud-starter-gateway
-
+routes :
 route,predicate,filter
+spring.cloud.gateway.routes[0].id=<service-name>
+spring.cloud.gateway.routes[0].uri=lb://<servicesname>
+spring.cloud.gateway.routes[0].predicate[0]=Path=/quiz/**
+
+dependency : spring-cloud-starter-gateway
+
+
 
 @EnableCircuitBreaker
-circuit breaker: set of states maintained in application. Open , closed, half open. 
+circuit breaker: set of states maintained in application. Open(calls will not be served) , closed, half open. 
 dependecy for circuit breaker: reslience4j
 management.health.circuitbreaker.enabled=true
 management.endpoints.web.exposure.include=*
@@ -25,3 +32,11 @@ distributed tracing dependencies: sleuth and zipkin
 
 management.zipkin.tracing.endpoint=http://localhost:9411/api/v2/spans
 management.tracing.sampling.probability=1.0
+
+
+Promotheus: store all the metrics from spring boot app into in memory database. Polls actuator endpoint
+every x seconds
+Grafana: Polls promotheus every x seconds. Visualise metrics using graphana
+
+management.endpoints.web.exposure.include=promotheus
+end point: actuator/promotheus
