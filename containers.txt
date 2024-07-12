@@ -1,0 +1,76 @@
+# Docker Compose
+docker-compose up -d
+
+version: '3.8'
+
+services:
+  demo-app:
+    image: your-dockerhub-username/demo-app:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - MY_ENV_VAR=Hello from Docker Compose
+
+
+
+
+# Create Kubernetes manifests (use the provided YAMLs)
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: demo-app
+  template:
+    metadata:
+      labels:
+        app: demo-app
+    spec:
+      containers:
+      - name: demo-app
+        image: your-dockerhub-username/demo-app:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MY_ENV_VAR
+          value: "Hello from Kubernetes"
+
+
+Services:
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-app-service
+spec:
+  selector:
+    app: demo-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+
+
+# Create EKS cluster
+eksctl create cluster --name demo-cluster --region us-west-2 --nodes 3
+
+# Update kubeconfig for EKS cluster
+aws eks --region us-west-2 update-kubeconfig --name demo-cluster
+
+# Verify current context
+kubectl config current-context
+kubectl config get-contexts
+kubectl config use-context <context-name>
+
+# Deploy application to EKS
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+
+# Verify deployment
+kubectl get pods
+kubectl get services
