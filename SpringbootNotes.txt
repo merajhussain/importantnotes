@@ -647,7 +647,7 @@ Authorization:
 Granted Authotrity: 
 
 Filters: Intercept every request. Spring security puts filters and examines all request and allows/denies request
-
+		
 AuthenticationManager: 
 
 Since Spring Boot relies on Spring Security’s defaults, CSRF protection is turned on by default. 
@@ -655,6 +655,14 @@ This means that the actuator endpoints that require a POST (shutdown and loggers
 PUT or DELETE will get a 403 forbidden error when the default security configuration is in use.
 
 Default Schema has users and authorities tables.
+
+
+jwt token format:
+x.y.z
+
+x= alogrith+token type
+y=payload(user details)
+z=signature
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -730,3 +738,5 @@ public class SwaggerConfig {
 }
 
 http://localhost:8080/swagger-ui.html
+
+https://learncodewithdurgesh.com/blogs/jwt-authentication-with-spring-boot-31

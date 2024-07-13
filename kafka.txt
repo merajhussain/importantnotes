@@ -5,7 +5,7 @@ paritions:
 producer:
 consumer:
 
-zookeeper-server-start.bat zookeeper.properties (starting zookper)
+zookeeper-server-start.bat config\zookeeper.properties (starting zookper)
 bin\windows\kafka-server-start.bat config\server.properties (starting kafka cluster)
 
 bin\windows\kafka-topics.bat --create --topic meraj-topic --bootstrap-server localhost:9092(create topic)
