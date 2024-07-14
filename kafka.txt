@@ -1,9 +1,9 @@
-Zookeeper: That manages kafka cluster
-cluster:
-brokers:
-paritions:
-producer:
-consumer:
+Zookeeper: Manages and coordinates the Kafka cluster.
+Cluster: A group of Kafka brokers working together.
+Brokers: Servers in a Kafka cluster that store and manage message data.
+Partitions: Subdivisions of a Kafka topic for scalability and parallelism.
+Producer: An application that publishes messages to Kafka topics.
+Consumer: An application that reads and processes messages from Kafka topics.
 
 zookeeper-server-start.bat config\zookeeper.properties (starting zookper)
 bin\windows\kafka-server-start.bat config\server.properties (starting kafka cluster)
