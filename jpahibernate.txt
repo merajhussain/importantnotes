@@ -1,0 +1,21 @@
+EntityManagerFactory emf = Persistence.createEntityManagerFactory("appname");
+EntityManager em = emf.createEntityManager();
+EntityTransaction trans = em.getTransaction();
+trans.begin();
+em.persist(object);
+trans.commit();
+
+persistence.xml:
+javax.persistence.jdbc.url
+javax.persistence.jdbc.driver
+javax.persistence.jdbc.user
+javax.persistence.jdbc.password
+hibernate.show_sql=true
+hibernate.format_sql=true
+hibernate.dialect
+
+important annotions:
+@Entity
+@Table(	name="table name")
+
+@Transient: doesn't automatically consider the field as column in database
