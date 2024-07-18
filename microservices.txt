@@ -40,3 +40,14 @@ Grafana: Polls promotheus every x seconds. Visualise metrics using graphana
 
 management.endpoints.web.exposure.include=promotheus
 end point: actuator/promotheus
+
+Saga Pattern:  choreography, orchestration
+
+choreography:
+In the choreography example, each service listens to events and acts accordingly. 
+The services are decoupled and communicate via an event bus. 
+This allows for independent scaling and loose coupling but can lead to complex event chains and difficulty in tracing the flow.
+
+In the orchestration example, a central orchestrator (BookingOrchestratorService) handles the entire booking process, 
+calling each service in turn. This simplifies the workflow management and 
+error handling but introduces a single point of failure and tighter coupling between the orchestrator and services.
