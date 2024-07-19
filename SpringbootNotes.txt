@@ -25,7 +25,11 @@ Spring bean is mainained by IOC container
 @component: simplest form of dependency
 @autowire:  injects the dependency automatically(setter,constructor & field injection)
 @qualifier(qualifiername): based on the qualifier we can select the bean
-@Primary: bean will be selected based on this qualitier
+@Primary: bean will be selected based on this 
+@Profile: usagae @Profile("profilename"). Used along with component and works similar to @primary and
+@qualifier but the difference is selection of bean for the autowired interface is injected at runtime
+based on the profile name configured in application.properties, 
+property name=spring.profiles.active=<profilename>
 
 @Inject is a standard annotaion but @Autowire is spring specifc
 
