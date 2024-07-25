@@ -40,4 +40,4 @@ CMS collector:
 G1(modern):
 
 
-
+Tool used to monitor JVM heap: JAVA Visual VM
