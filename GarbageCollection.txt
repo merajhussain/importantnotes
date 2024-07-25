@@ -1,0 +1,43 @@
+JVM HEAP:
+
+Automatic garbage collection is the process of looking at heap memory, 
+identifying which objects are in use and which are not, 
+and deleting the unused objects. An in use object, or a referenced object, 
+means that some part of your program still maintains a pointer to that object. 
+An unused object, or unreferenced object, is no longer referenced by any part of your program. 
+So the memory used by an unreferenced object can be reclaimed.
+
+Process of Automatic gc:
+marking: Frist step where gc identifies which objects are in referenced or unreferenced.
+Deletion: Marked objects are deleted.
+Deletion with compacting: Deletion happens and referenced objects are moved together so that
+free memory is at one place. 
+
+
+Automatic gc is inefficient because of its brute force approach and the gc time increases
+with the list of unreferenced objects. Hence generations GC was introduced.
+
+JVM Generations(Heap structure with generational GC):
+
+     There are three generations/regions. Young,old and permanent
+
+Young Generation: New objects are put into this space. When young gets full a minor garbage gc kicks in.
+Dead/unreferenced objects are moved to old generation. minor gc event is called stop the world event.
+
+Old generation: Long lived objects or unrefereced objects from young are moved to old generation when
+stop the world event kicks in. Major gc event kicks in to free up old generation event. 
+
+Permanent generation: contains metadata required by the JVM to describe the classes and methods used in the application. 
+The permanent generation is populated by the JVM at runtime based on classes in use by the application. 
+In addition, Java SE library classes and methods may be stored here.
+
+Types of Garbgae collectors:
+
+Serial: minor and major gc are done serially.
+parallel: Used n threads to perform minor gc
+
+CMS collector: 	
+G1(modern):
+
+
+
