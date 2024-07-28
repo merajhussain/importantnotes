@@ -547,9 +547,6 @@ We have been passing the mock object to the StudentService object as a construct
 The annotation @ConditionalOnMissingBean tells Spring Boot to configure the bean only if the supplied bean in the parameter is not configured and registered in the application context already.
 
 
-@EnableEurekaClient: To enable a microservice to register itself as eureka client during service discover;
-@EnableEurekaServer: To enable discovery services for client to register. 
-
 
 Spring security:
 

@@ -51,3 +51,20 @@ This allows for independent scaling and loose coupling but can lead to complex e
 In the orchestration example, a central orchestrator (BookingOrchestratorService) handles the entire booking process, 
 calling each service in turn. This simplifies the workflow management and 
 error handling but introduces a single point of failure and tighter coupling between the orchestrator and services.
+
+
+@EnableEurekaClient: To enable a microservice to register itself as eureka client during service discover;
+@EnableEurekaServer: To enable discovery services for client to register. 
+
+
+===============api-gateway=========================
+ api gateway is used for providing routing,security,cirtcuit breaking,etc
+spring.cloud.gateway.discovery.locator.enabled=true//allowing api gateway to locate services based on
+routing
+spring.cloud.gateway.discovery.locator.lower-case-service-id=true//to accept service name in lower case in rest api
+@EnableEurekaClient: To register the app/service in eureka server's service registry
+configure discovery server(ex: eureka) details in app.properties
+
+spring.cloud.gateway.routes.id=id of the service
+uri: uri of the service
+predicate: path (to forward request based on matching patterns in path)
