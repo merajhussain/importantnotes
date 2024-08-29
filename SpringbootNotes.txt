@@ -490,7 +490,7 @@ An aspect is a Java class that implements cross-cutting concerns.
  Pointcut
 Pointcuts are expressions that determine which method calls will be intercepted. 
 These expressions determine whether an advice needs to be executed or not.
- Pointcuts are defined following a particular syntax.
+Pointcuts are defined following a particular syntax.
  
  Joinpoint
 All method calls that are intercepted are joinpoints. 
@@ -741,3 +741,6 @@ public class SwaggerConfig {
 http://localhost:8080/swagger-ui.html
 
 https://learncodewithdurgesh.com/blogs/jwt-authentication-with-spring-boot-31
+
+
+ 
