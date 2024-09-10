@@ -14,3 +14,33 @@ Created topic meraj-topic.
 \kafka-console-producer.bat --topic meraj-topic --bootstrap-server localhost:9092
 
 kafka-console-consumer.bat --topic meraj-topic --from-beginning --bootstrap-server localhost:9092
+
+
+RabbitMQ
+Vs
+Kafka
+
+Architecture
+
+RabbitMQ’s architecture is designed for complex message routing. It uses the push model. Producers send messages to consumers with different rules. 
+
+Kafka uses partition-based design for real-time, high-throughput stream processing. It uses the pull model. Producers publish messages to topics and partitions that consumers subscribe to. 
+
+Message handling
+
+RabbitMQ brokers monitor message consumption. It deletes messages after they’re consumed. It supports message priorities. 
+
+Consumers keep track of message retrieval with an offset tracker. Kafka retains messages according to the retention policy. There’s no message priority. 
+
+Performance
+
+RabbitMQ has low latency. It sends thousands of messages per second.
+
+Kafka has real-time transmission of up to millions of messages per second.
+
+Programming language and protocol
+
+RabbitMQ supports a broad range of languages and legacy protocols.
+
+Kafka has limited choices of programming languages. It uses binary protocol over TCP for data transmission. 
+
